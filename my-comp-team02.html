@@ -1,0 +1,107 @@
+<link rel="import" href="../polymer/polymer.html">
+<!--<script src="../gifffer/build/gifffer.min.js"></script>-->
+<script src="./lib/libgif.js"></script>
+
+<!--
+An element providing a solution to no problem in particular.
+
+Example:
+
+    <my-comp-team02></my-comp-team02>
+
+Example:
+
+    <my-comp-team02>
+      <h2>Hello my-comp-team02</h2>
+    </my-comp-team02>
+
+@demo demo/index.html
+@hero hero.svg
+-->
+
+<dom-module id="my-comp-team02">
+  <template>
+    <style>
+      /*:host {
+        display: block;
+        box-sizing: border-box;
+      }*/
+    </style>
+
+    <!--<img data-gifffer$="[[image]]" data-gifffer-width$="[[width]]" data-gifffer-height$="[[height]]" data-gifffer-duration$="[[duration]]" />-->
+    <img id="img" src$="[[image]]" rel:animated_src$="[[image]]"
+        width$="[[width]]" height$="[[height]]" rel:auto_play="1" rel:rubbable="0" />
+
+  </template>
+
+  <script>
+    Polymer({
+      is: 'my-comp-team02',
+
+      properties: {
+          image: {
+            type: String
+          },
+          width: {
+            type: String,
+            value:'auto' 
+          },
+          height: {
+            type: String,
+            value: 'auto'
+          },
+          duration: {
+            type: Number,
+            value: null
+          }
+      },
+      
+      dimentionChanged: function(value) {
+        console.debug(value);
+      },
+
+      // Element Lifecycle
+
+      ready: function() {
+        // `ready` is called after all elements have been configured, but
+        // propagates bottom-up. This element's children are ready, but parents
+        // are not.
+        //
+        // This is the point where you should make modifications to the DOM (when
+        // necessary), or kick off any processes the element wants to perform.
+      },
+
+      attached: function() {
+        // `attached` fires once the element and its parents have been inserted
+        // into a document.
+        //
+        // This is a good place to perform any work related to your element's
+        // visual state or active behavior (measuring sizes, beginning animations,
+        // loading resources, etc).
+        // Gifffer();
+        var rub = new SuperGif({
+          gif: this.$.img
+        });
+         rub.load(function(){
+             console.log('oh hey, now the gif is loaded');
+         });
+      },
+
+      detached: function() {
+        // The analog to `attached`, `detached` fires when the element has been
+        // removed from a document.
+        //
+        // Use this to clean up anything you did in `attached`.
+      },
+
+      // Element Behavior
+
+      /**
+       * The `my-comp-team02-lasers` event is fired whenever `fireLasers` is called.
+       *
+       * @event my-comp-team02-lasers
+       * @detail {{sound: String}}
+       */
+    });
+  </script>
+</dom-module>
