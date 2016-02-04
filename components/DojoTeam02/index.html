@@ -1,0 +1,78 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, minimum-scale=1.0, initial-scale=1.0, user-scalable=yes">
+    <title>my-comp-team01 Demo</title>
+    <script src="../../webcomponentsjs/webcomponents-lite.min.js"></script>
+    <link rel="import" href="../../iron-demo-helpers/demo-snippet.html">
+    <link rel="import" href="../../iron-demo-helpers/demo-pages-shared-styles.html">
+    <link rel="import" href="../../paper-material/paper-material.html">
+    <link rel="import" href="../../paper-button/paper-button.html">
+    <link rel="import" href="../my-comp-team02.html">
+    <style is="custom-style" include="demo-pages-shared-styles">
+      paper-material {
+        padding-top: 16px;  
+        padding-bottom: 16px;  
+      }
+      
+      paper-material p {
+        margin-left: 16px;
+        margin-right: 16px;
+      }
+    </style>    
+  </head>
+  <body unresolved>
+    <template is="dom-bind" id="app">
+      <style is="custom-style">
+        body {
+          background-color: var(--light-primary-color);
+        }
+
+        paper-material {
+          background-color: white;
+          margin: 24px;
+          padding: 16px;
+        }
+        
+        .my-input-container {
+          display: block;
+          margin: 24px;
+        }
+      </style>
+      <div class="horizontal-section-container">
+        <div class="vertical-section">
+          <demo-snippet>
+            <paper-button raised on-tap="_onPlay">PLAY</paper-button>
+            <paper-button raised on-tap="_onPause">PAUSE</paper-button>
+            <paper-button raised on-tap="_onStop">STOP</paper-button>
+            <my-comp-team02 id="compTeam02" image="./fig2-animation.gif" width="10%" height="10%" duration="1000" no-controllable>
+            </my-comp-team02>
+          </demo-snippet>
+        </div>
+      </div>
+      <script>
+        
+        window.addEventListener('WebComponentsReady', function() {
+          
+          var app = document.querySelector('#app');
+          var comTeam02 = document.querySelector('#compTeam02');
+          
+          app._onPlay = function () {
+            comTeam02.play();
+          };
+
+          app._onPause = function () {
+            comTeam02.pause();
+          };
+
+          app._onStop = function () {
+            comTeam02.stop();
+          };
+          
+        });
+        
+      </script>
+    </template>
+  </body>
+</html>
