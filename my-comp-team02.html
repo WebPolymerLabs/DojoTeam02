@@ -29,8 +29,13 @@ Example:
     </style>
 
     <!--<img data-gifffer$="[[image]]" data-gifffer-width$="[[width]]" data-gifffer-height$="[[height]]" data-gifffer-duration$="[[duration]]" />-->
-    <img id="img" src$="[[image]]" rel:animated_src$="[[image]]"
-        width$="[[width]]" height$="[[height]]" rel:auto_play="1" rel:rubbable="0" />
+    <img id="img" src$="[[image]]" 
+         rel:animated_src$="[[image]]"
+         width$="[[width]]" 
+         height$="[[height]]" 
+         rel:auto_play$="[[_cptAutoplay(autoplay)]]" 
+         rel:rubbable="0"
+          />
 
   </template>
 
@@ -53,11 +58,22 @@ Example:
           duration: {
             type: Number,
             value: null
+          },
+          autoplay: {
+            type: Boolean,
+            value: false
+          },
+          noControllable: {
+            type: Boolean,
+            value: false
           }
       },
       
       dimentionChanged: function(value) {
         console.debug(value);
+      },
+      _cptAutoplay: function(value) {
+        return value? 1 : 0;
       },
 
       // Element Lifecycle
@@ -69,6 +85,8 @@ Example:
         //
         // This is the point where you should make modifications to the DOM (when
         // necessary), or kick off any processes the element wants to perform.
+        this.addEventListener('click', this._tooglePlay.bind(this));
+        this.playing = false;
       },
 
       attached: function() {
@@ -79,12 +97,17 @@ Example:
         // visual state or active behavior (measuring sizes, beginning animations,
         // loading resources, etc).
         // Gifffer();
+        var self = this;
+        
         var rub = new SuperGif({
           gif: this.$.img
         });
          rub.load(function(){
              console.log('oh hey, now the gif is loaded');
+             self.playing = self.autoplay;
          });
+         
+         this.rub = rub;
       },
 
       detached: function() {
@@ -93,6 +116,33 @@ Example:
         //
         // Use this to clean up anything you did in `attached`.
       },
+      _tooglePlay: function() {
+        if (!this.noControllable) {
+          if (!this.playing) {
+            this.rub.play();
+            this.playing = true;
+          } else {
+            this.rub.pause();
+            this.playing = false;
+          }
+        }
+        
+      },
+      
+      play: function() {
+        this.rub.play();
+        this.playing = true;
+      },
+      
+      pause: function() {
+        this.rub.pause();
+        this.playing = false;         
+      },
+      
+      stop: function() {
+        this.pause();
+        this.rub.move_to(0);
+      }
 
       // Element Behavior
 
