@@ -22,10 +22,31 @@ Example:
 <dom-module id="my-comp-team02">
   <template>
     <style>
-      /*:host {
+      :host {
         display: block;
         box-sizing: border-box;
-      }*/
+        position: relative;
+      }
+      .overlay {
+        position: absolute;
+        width: 100%;
+        height: 100%;
+        top: 0;
+        left: 0;
+        background-color: red;
+        @apply(--my-comp-team02-control-overlay);
+      }
+      .overlay_image {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        max-width: 100%;
+        max-height: 100%;
+        
+        transform: translate(-50%, -50%);
+        
+        z-index: 1;
+      }
     </style>
 
     <!--<img data-gifffer$="[[image]]" data-gifffer-width$="[[width]]" data-gifffer-height$="[[height]]" data-gifffer-duration$="[[duration]]" />-->
@@ -36,6 +57,10 @@ Example:
          rel:auto_play$="[[_cptAutoplay(autoplay)]]" 
          rel:rubbable="0"
           />
+     <template is="dom-if" if="[[_shouldDisplayOverlay(overlayImage, playing)]]">
+       <div class="overlay"></div>
+       <img src$="[[overlayImage]]" class="overlay_image" />
+     </template>
 
   </template>
 
@@ -66,7 +91,23 @@ Example:
           noControllable: {
             type: Boolean,
             value: false
+          },
+          overlayImage: {
+            type: String,
+            value: null
+          },
+          thumbFrame: {
+            type: Number,
+            value: 0
+          },
+          noLoadProgress: {
+            type: Boolean,
+            value: false
           }
+      },
+      
+      _shouldDisplayOverlay: function(overlayImage, playing) {
+         return overlayImage && !playing;
       },
       
       dimentionChanged: function(value) {
@@ -99,12 +140,20 @@ Example:
         // Gifffer();
         var self = this;
         
-        var rub = new SuperGif({
-          gif: this.$.img
-        });
+        var options = {
+          gif: this.$.img,
+        };
+        if (this.noLoadProgress) {
+          options.progressbar_height = 0;
+        }
+        
+        var rub = new SuperGif(options);
          rub.load(function(){
              console.log('oh hey, now the gif is loaded');
              self.playing = self.autoplay;
+             rub.move_to(self.thumbFrame);
+             
+             self.fire('gif-loaded');
          });
          
          this.rub = rub;
